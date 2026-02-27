@@ -12,7 +12,7 @@
 
 <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk1vdmltZW50YcOnw6NvIGRlIENhcGl0YWwiLAogICJzaG9ydF9uYW1lIjogIkNhcGl0YWxBcHAiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2Y4ZjlmaCIsCiAgInRoZW1lX2NvbG9yIjogIiM3YjJjZmYiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yNDg5LzI0ODk3MTgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
 
-<title>Capital App - Web App</title>
+<title>Capital App - Gestão</title>
 <style>
   :root {
     --roxo: #7b2cff; --roxo-claro: #f3edff; --roxo-escuro: #5b12cc;
@@ -25,9 +25,9 @@
     margin: 0; font-family: 'Inter', -apple-system, sans-serif; 
     background: var(--fundo); color: #1a1a1a;
     padding-top: env(safe-area-inset-top);
+    padding-bottom: 40px;
   }
 
-  /* BOTÃO DE INSTALAÇÃO DINÂMICO */
   #bannerInstalacao {
     display: none; background: var(--amarelo); padding: 15px;
     text-align: center; font-weight: 800; border-bottom: 2px solid #eec900;
@@ -50,24 +50,28 @@
 
   .btn-main { width: 100%; background: var(--roxo); color: white; padding: 16px; border-radius: 15px; border: none; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 10px; }
 
-  /* CARROSSEL DE CARDS */
+  /* CARROSSEL DE CARDS - PRIORIDADE NO TOPO */
   .slider-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 5px 25px; scrollbar-width: none; }
   .slider-container::-webkit-scrollbar { display: none; }
-  .card-investidor { flex: 0 0 85%; scroll-snap-align: center; background: white; border-radius: var(--radius); border: 1.5px solid var(--linha); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; }
+  .card-investidor { flex: 0 0 88%; scroll-snap-align: center; background: white; border-radius: var(--radius); border: 1.5px solid var(--linha); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px; }
   
-  .info-row { display: flex; justify-content: space-between; font-size: 13px; }
-  .margem-box { background: var(--roxo-claro); padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-  .btn-pago { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; }
+  .card-header { font-weight: 900; color: var(--roxo); border-bottom: 1px solid #eee; padding-bottom: 8px; font-size: 16px; text-transform: uppercase; }
+  .info-row { display: flex; justify-content: space-between; font-size: 13px; padding: 2px 0; border-bottom: 1px dotted #f0f0f0; }
+  .info-row span { color: #666; font-weight: 600; }
+  .info-row b { color: #333; }
+
+  .margem-box { background: var(--roxo-claro); padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin: 8px 0; }
+  .btn-pago { width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; margin-bottom: 8px; }
   .pago { background: #2ecc71; color: white; }
   .nao-pago { background: #e74c3c; color: white; }
   
   .card-actions { display: flex; gap: 10px; }
-  .btn-edit { flex: 1; background: #3498db; color: white; padding: 10px; border-radius: 8px; border: none; }
-  .btn-del { flex: 1; background: #ddd; color: #555; padding: 10px; border-radius: 8px; border: none; }
+  .btn-edit { flex: 1; background: #3498db; color: white; padding: 12px; border-radius: 10px; border: none; font-weight: 700; }
+  .btn-del { flex: 1; background: #f2f2f2; color: #666; padding: 12px; border-radius: 10px; border: none; font-weight: 700; }
 
-  /* FILTROS E TOTAL */
+  /* FILTROS E TOTAL - ABAIXO DOS CARDS */
   .filtro-card { border: 2px solid var(--roxo); padding: 15px; border-radius: var(--radius); background: #fff; margin-top: 10px; }
-  .total-card { background: var(--roxo); color: white; padding: 18px; border-radius: 15px; text-align: center; margin: 15px 0; }
+  .total-card { background: var(--roxo); color: white; padding: 18px; border-radius: 15px; text-align: center; margin: 15px 0; box-shadow: 0 5px 15px rgba(123, 44, 255, 0.3); }
 
   /* POPUP CALENDARIO */
   .popup-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
@@ -75,12 +79,18 @@
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
   .cal-day { padding: 12px 5px; border-radius: 10px; font-size: 13px; cursor: pointer; border: 1px solid #eee; text-align: center; }
   .cal-day.selected { background: var(--roxo) !important; color: white !important; }
+  
+  /* Botão Mês Inteiro Roxo */
+  #btnSelMes { background: var(--roxo); color: white; }
+
+  .footer-btns { display: flex; gap: 10px; padding: 15px; margin-top: 10px; }
+  .btn-system { flex: 1; background: #333; color: #fff; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 12px; text-transform: uppercase; }
 </style>
 </head>
 <body>
 
 <div id="bannerInstalacao" onclick="instalarApp()">
-  ✨ CLIQUE AQUI PARA INSTALAR O APP NO SEU CELULAR ✨
+  ✨ CLIQUE AQUI PARA INSTALAR O APP ✨
 </div>
 
 <div class="tabs">
@@ -99,66 +109,68 @@
     <div class="field"><label>Fornecedor</label><input id="fornecedor" type="text"></div>
     <div class="field"><label>Valor Compra</label><input id="valorCompra" type="number" step="0.01"></div>
     <div class="field"><label>Valor Venda</label><input id="valorVenda" type="number" step="0.01"></div>
-    <button id="btnAdd" class="btn-main" onclick="handleSave()">Salvar no App</button>
+    <button id="btnAdd" class="btn-main" onclick="handleSave()">Salvar Registro</button>
   </div>
 </section>
 
 <section id="tab-list" class="view-section">
   <div id="sliderMobile" class="slider-container"></div>
+
   <div class="filtro-card">
     <label>Filtrar Período ou Dia</label>
-    <input id="filtroData" type="text" readonly placeholder="Toque para filtrar...">
-    <select id="filtroStatus" onchange="aplicarFiltros()" style="margin-top:10px">
+    <input id="filtroData" type="text" readonly placeholder="Toque para selecionar...">
+    
+    <label style="margin-top:15px">Filtrar por Status</label>
+    <select id="filtroStatus" onchange="aplicarFiltros()">
       <option value="">Todos os Status</option>
       <option value="pago">Pagos</option>
       <option value="nao">Não Pagos</option>
     </select>
+
     <div class="total-card">
-      <span style="font-size:12px">LUCRO ACUMULADO (40%)</span>
-      <span id="totalMargem" style="display:block; font-size:22px; font-weight:900">R$ 0,00</span>
+      <span style="font-size:11px; font-weight:700; opacity:0.9">LUCRO ACUMULADO (40%)</span>
+      <span id="totalMargem" style="display:block; font-size:24px; font-weight:900; margin-top:5px">R$ 0,00</span>
     </div>
-    <button onclick="limparFiltros()" class="btn-del" style="width:100%; background:#666; color:#fff">Limpar Filtros</button>
+    
+    <button onclick="limparFiltros()" class="btn-del" style="width:100%; background:#666; color:#fff; border-radius:12px">Limpar Todos os Filtros</button>
   </div>
-  <div style="display:flex; gap:10px; margin-top:15px">
-    <button onclick="fazerBackup()" class="btn-del" style="flex:1; background:#333; color:#fff">Backup</button>
-    <button onclick="importarDados()" class="btn-del" style="flex:1; background:#333; color:#fff">Importar</button>
+
+  <div class="footer-btns">
+    <button onclick="fazerBackup()" class="btn-system">Exportar Backup</button>
+    <button onclick="importarDados()" class="btn-system">Importar Dados</button>
   </div>
 </section>
 
 <div id="popupBg" class="popup-bg">
   <div class="popup-cal">
-    <div style="display:flex; justify-content:space-between; margin-bottom:15px">
-      <button onclick="changeMonth(-1)">◀</button>
-      <div id="calTitulo" style="font-weight:900"></div>
-      <button onclick="changeMonth(1)">▶</button>
+    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center">
+      <button onclick="changeMonth(-1)" style="border:none; background:none; font-size:20px; color:var(--roxo)">◀</button>
+      <div id="calTitulo" style="font-weight:900; color:var(--roxo-escuro)"></div>
+      <button onclick="changeMonth(1)" style="border:none; background:none; font-size:20px; color:var(--roxo)">▶</button>
     </div>
-    <div style="display:flex; gap:5px; margin-bottom:12px">
-      <button id="btnSelMes" class="btn-edit" style="font-size:11px">Mês Inteiro</button>
-      <button id="btnSelPeriodo" class="btn-edit" style="font-size:11px; background:#444">Modo Período</button>
+    <div style="display:flex; gap:8px; margin-bottom:15px">
+      <button id="btnSelMes" class="btn-edit" style="font-size:11px; flex:1">Mês Inteiro</button>
+      <button id="btnSelPeriodo" class="btn-edit" style="font-size:11px; background:#444; flex:1">Modo Período</button>
     </div>
     <div id="calGrid" class="cal-grid"></div>
     <div style="margin-top:20px; display:flex; gap:10px">
       <button onclick="fecharCalendario()" class="btn-del" style="flex:1">Sair</button>
-      <button onclick="confirmarData()" class="btn-main" style="flex:1; margin:0">Aplicar</button>
+      <button onclick="confirmarData()" class="btn-main" style="flex:1; margin:0; padding:12px">Aplicar</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ================= REGISTRO DE SERVICE WORKER (PARA ATIVAR PWA) ================= */
+/* REGISTRO DE SERVICE WORKER (PWA) */
 if ('serviceWorker' in navigator) {
-  const swCode = `
-    self.addEventListener('install', e => self.skipWaiting());
-    self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
-  `;
+  const swCode = `self.addEventListener('install', e => self.skipWaiting()); self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));`;
   const blob = new Blob([swCode], {type: 'application/javascript'});
   navigator.serviceWorker.register(URL.createObjectURL(blob));
 }
 
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
+  e.preventDefault(); deferredPrompt = e;
   document.getElementById('bannerInstalacao').style.display = 'block';
 });
 
@@ -172,8 +184,8 @@ function instalarApp() {
   }
 }
 
-/* ================= LÓGICA DO SISTEMA ================= */
-const STORAGE_KEY = "registros_capital_v3";
+/* SISTEMA */
+const STORAGE_KEY = "registros_capital_v4";
 let registros = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 let editIndex = null;
 let calViewDate = new Date();
@@ -198,11 +210,13 @@ function handleSave() {
   const novo = {
     dataEntrada: parseDateToIso(document.getElementById("dataEntrada").value),
     dataSaida: parseDateToIso(document.getElementById("dataSaida").value),
-    carro: document.getElementById("carro").value,
-    cliente: document.getElementById("cliente").value,
-    placa: document.getElementById("placa").value,
-    fornecedor: document.getElementById("fornecedor").value,
-    valorCompra: c, valorVenda: v, margem: m,
+    carro: document.getElementById("carro").value || "",
+    cliente: document.getElementById("cliente").value || "",
+    placa: document.getElementById("placa").value || "",
+    fornecedor: document.getElementById("fornecedor").value || "",
+    valorCompra: c, 
+    valorVenda: v, 
+    margem: m,
     pago: editIndex !== null ? registros[editIndex].pago : false
   };
 
@@ -224,15 +238,28 @@ function aplicarFiltros() {
   document.getElementById("totalMargem").innerText = "R$ " + (filtrados.reduce((a, b) => a + b.margem, 0)).toLocaleString('pt-BR', {minimumFractionDigits:2});
   
   const slider = document.getElementById("sliderMobile");
-  slider.innerHTML = filtrados.length ? "" : "<p style='width:100%; text-align:center; color:#999; padding:40px 0'>Nenhum registro encontrado.</p>";
+  slider.innerHTML = filtrados.length ? "" : "<p style='width:100%; text-align:center; color:#999; padding:40px 0'>Nenhum registro para este filtro.</p>";
   
   filtrados.forEach((r, i) => {
     const idx = registros.indexOf(r);
-    slider.innerHTML += `<div class="card-investidor">
-      <div style="font-weight:900; color:var(--roxo); border-bottom:1px solid #eee; padding-bottom:5px">${r.carro || 'SEM NOME'}</div>
-      <div class="info-row"><span>Entrada:</span><b>${formatDateIso(r.dataEntrada)}</b></div>
-      <div class="margem-box"><span>LUCRO (40%)</span><b style="color:var(--roxo); font-size:18px">R$ ${r.margem.toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div>
+    slider.innerHTML += `
+    <div class="card-investidor">
+      <div class="card-header">${r.carro || 'SEM NOME'}</div>
+      <div class="info-row"><span>Entrada</span><b>${formatDateIso(r.dataEntrada) || '---'}</b></div>
+      <div class="info-row"><span>Saída</span><b>${formatDateIso(r.dataSaida) || '---'}</b></div>
+      <div class="info-row"><span>Placa</span><b>${r.placa || '---'}</b></div>
+      <div class="info-row"><span>Cliente</span><b>${r.cliente || '---'}</b></div>
+      <div class="info-row"><span>Fornecedor</span><b>${r.fornecedor || '---'}</b></div>
+      <div class="info-row"><span>Valor Compra</span><b>R$ ${r.valorCompra.toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div>
+      <div class="info-row"><span>Valor Venda</span><b>R$ ${r.valorVenda.toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div>
+      
+      <div class="margem-box">
+        <span style="font-size:11px; font-weight:700; color:var(--roxo-escuro)">LUCRO (40%)</span>
+        <b style="color:var(--roxo); font-size:18px">R$ ${r.margem.toLocaleString('pt-BR',{minimumFractionDigits:2})}</b>
+      </div>
+      
       <button class="btn-pago ${r.pago?'pago':'nao-pago'}" onclick="togglePago(${idx})">${r.pago?'PAGO':'NÃO PAGO'}</button>
+      
       <div class="card-actions">
         <button class="btn-edit" onclick="prepararEdicao(${idx})">EDITAR</button>
         <button class="btn-del" onclick="excluirRegistro(${idx})">EXCLUIR</button>
@@ -241,10 +268,10 @@ function aplicarFiltros() {
   });
 }
 
-// CALENDÁRIO
+/* CALENDÁRIO */
 function renderCalendario() {
   const grid = document.getElementById("calGrid"); grid.innerHTML = "";
-  document.getElementById("calTitulo").innerText = `${calViewDate.getMonth()+1}/${calViewDate.getFullYear()}`;
+  document.getElementById("calTitulo").innerText = `${calViewDate.getMonth()+1} / ${calViewDate.getFullYear()}`;
   const prim = new Date(calViewDate.getFullYear(), calViewDate.getMonth(), 1).getDay();
   const ult = new Date(calViewDate.getFullYear(), calViewDate.getMonth()+1, 0).getDate();
   for(let i=0; i<prim; i++) grid.innerHTML += `<div></div>`;
@@ -258,7 +285,8 @@ function cliqueDia(iso) {
   if(!isRangeMode) selectedDates = [iso];
   else if(!rangeStart) { rangeStart = iso; selectedDates = [iso]; }
   else {
-    let s = new Date(rangeStart), e = new Date(iso); if(s > e) [s, e] = [e, s];
+    let s = new Date(rangeStart + "T00:00:00"), e = new Date(iso + "T00:00:00"); 
+    if(s > e) [s, e] = [e, s];
     selectedDates = []; while(s <= e) { selectedDates.push(s.toISOString().split('T')[0]); s.setDate(s.getDate()+1); }
     rangeStart = null;
   }
@@ -271,33 +299,91 @@ document.getElementById("btnSelMes").onclick = () => {
   renderCalendario();
 };
 
-document.getElementById("btnSelPeriodo").onclick = (e) => { isRangeMode = !isRangeMode; e.target.style.background = isRangeMode ? "var(--roxo)" : "#444"; rangeStart = null; };
+document.getElementById("btnSelPeriodo").onclick = (e) => { 
+  isRangeMode = !isRangeMode; 
+  e.target.style.background = isRangeMode ? "var(--roxo-escuro)" : "#444"; 
+  rangeStart = null; 
+};
 
 function confirmarData() {
-  if(selectedDates.length > 0) currentTargetInput.value = selectedDates.length > 1 ? "Período..." : formatDateIso(selectedDates[0]);
-  fecharCalendario(); if(currentTargetInput.id === "filtroData") aplicarFiltros();
+  if(selectedDates.length > 0) {
+    if(currentTargetInput.id === "filtroData") {
+       currentTargetInput.value = selectedDates.length > 1 ? "Período Selecionado" : formatDateIso(selectedDates[0]);
+    } else {
+       currentTargetInput.value = formatDateIso(selectedDates[0]);
+    }
+  }
+  fecharCalendario(); aplicarFiltros();
 }
 
-// AUXILIARES
+/* AUXILIARES */
 const formatDateIso = (iso) => { if(!iso) return ""; const [y,m,d] = iso.split("-"); return `${d}/${m}/${y}`; };
 const parseDateToIso = (br) => { if(!br) return ""; const [d,m,y] = br.split("/"); return `${y}-${m}-${d}`; };
 const changeMonth = (v) => { calViewDate.setMonth(calViewDate.getMonth()+v); renderCalendario(); };
 const fecharCalendario = () => document.getElementById("popupBg").style.display = "none";
-const limparForm = () => { editIndex = null; document.querySelectorAll('#tab-add input').forEach(i => i.value = ""); document.getElementById("btnAdd").innerText = "Salvar no App"; };
-const togglePago = (i) => { registros[i].pago = !registros[i].pago; localStorage.setItem(STORAGE_KEY, JSON.stringify(registros)); aplicarFiltros(); };
-const excluirRegistro = (i) => { if(confirm("Excluir permanentemente?")) { registros.splice(i,1); localStorage.setItem(STORAGE_KEY, JSON.stringify(registros)); aplicarFiltros(); } };
-const prepararEdicao = (idx) => { 
+
+function limparForm() { 
+  editIndex = null; 
+  document.querySelectorAll('#tab-add input').forEach(i => i.value = ""); 
+  document.getElementById("btnAdd").innerText = "Salvar Registro"; 
+}
+
+function togglePago(i) { 
+  registros[i].pago = !registros[i].pago; 
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(registros)); 
+  aplicarFiltros(); 
+}
+
+function excluirRegistro(i) { 
+  if(confirm("Excluir este registro permanentemente?")) { 
+    registros.splice(i,1); 
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(registros)); 
+    aplicarFiltros(); 
+  } 
+}
+
+function prepararEdicao(idx) { 
   editIndex = idx; const r = registros[idx];
   document.getElementById("dataEntrada").value = formatDateIso(r.dataEntrada);
   document.getElementById("dataSaida").value = formatDateIso(r.dataSaida);
   document.getElementById("carro").value = r.carro; document.getElementById("cliente").value = r.cliente;
   document.getElementById("placa").value = r.placa; document.getElementById("fornecedor").value = r.fornecedor;
   document.getElementById("valorCompra").value = r.valorCompra; document.getElementById("valorVenda").value = r.valorVenda;
-  document.getElementById("btnAdd").innerText = "Atualizar Dados"; switchTab('add');
-};
-function limparFiltros() { selectedDates = []; document.getElementById("filtroData").value = ""; aplicarFiltros(); }
-function fazerBackup() { const blob = new Blob([JSON.stringify(registros)], {type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download="backup_capital.json"; a.click(); }
-function importarDados() { const inp = document.createElement("input"); inp.type="file"; inp.onchange=(e)=>{ const fr=new FileReader(); fr.onload=(ev)=>{ registros=JSON.parse(ev.target.result); localStorage.setItem(STORAGE_KEY,JSON.stringify(registros)); aplicarFiltros(); }; fr.readAsText(e.target.files[0]); }; inp.click(); }
+  document.getElementById("btnAdd").innerText = "Atualizar Registro"; switchTab('add');
+}
+
+function limparFiltros() { 
+  selectedDates = []; 
+  document.getElementById("filtroData").value = ""; 
+  document.getElementById("filtroStatus").value = ""; // Limpa o status também
+  aplicarFiltros(); 
+}
+
+function fazerBackup() { 
+  const blob = new Blob([JSON.stringify(registros, null, 2)], {type:"application/json"}); 
+  const a = document.createElement("a"); 
+  a.href = URL.createObjectURL(blob); a.download="backup_capital.json"; a.click(); 
+}
+
+function importarDados() { 
+  const inp = document.createElement("input"); inp.type="file"; 
+  inp.onchange=(e)=>{ 
+    const fr=new FileReader(); 
+    fr.onload=(ev)=>{ 
+      try {
+        const data = JSON.parse(ev.target.result);
+        if(Array.isArray(data)) {
+           registros = data;
+           localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+           aplicarFiltros();
+           alert("Dados importados com sucesso!");
+        }
+      } catch(err) { alert("Arquivo JSON inválido."); }
+    }; 
+    fr.readAsText(e.target.files[0]); 
+  }; 
+  inp.click(); 
+}
 
 document.getElementById("dataEntrada").onclick = (e) => { isRangeMode = false; currentTargetInput = e.target; document.getElementById("popupBg").style.display = "flex"; renderCalendario(); };
 document.getElementById("dataSaida").onclick = (e) => { isRangeMode = false; currentTargetInput = e.target; document.getElementById("popupBg").style.display = "flex"; renderCalendario(); };
