@@ -1,683 +1,327 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Movimentação de capital de investidores — Full Mobile/PC</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>HM Desk Business - ADM PANEL</title>
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Investidores">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/263/263154.png">
-<meta name="theme-color" content="#7b2cff">
-<link rel="manifest" id="pwa-manifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HM ADM">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3001/3001764.png">
+    <meta name="theme-color" content="#7b2cff">
+    <link rel="manifest" id="pwa-manifest">
 
-<style>
-  :root{
-    --roxo:#7b2cff; --roxo-escuro:#5b12cc; --amarelo:#ffdf37;
-    --fundo:#f3edff; --card:#ffffff; --linha:#d8c4ff; --input-bg:#faf6ff;
-    --shadow: 0 10px 25px rgba(123,44,255,0.08); --radius: 12px;
-    --small:12px;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--fundo);color:#1a1a1a;-webkit-font-smoothing:antialiased;}
-  .page{max-width:1180px;margin:18px auto;padding:18px;}
-  .container{background:var(--card);padding:18px;border-radius:var(--radius);border:2px solid var(--linha);box-shadow:var(--shadow);}  
-  h2{text-align:center;color:var(--roxo);font-size:24px;font-weight:800;margin:6px 0 16px;}
+    <style>
+        :root {
+            --roxo: #7b2cff; --roxo-escuro: #5b12cc; --success: #28a745;
+            --bg: #f8f9fd; --card: #ffffff; --text: #2d3436; --border: #edf2f7;
+        }
 
-  .form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;align-items:end;}
-  .field{display:flex;flex-direction:column;min-height:64px;}
-  label{font-size:12px;font-weight:700;color:var(--roxo-escuro);margin-bottom:6px;text-transform:uppercase;}
-  input,select,button{padding:10px 12px;border-radius:10px;border:2px solid var(--linha);background:var(--input-bg);height:40px;font-size:14px;}
-  input[readonly]{cursor:pointer;}
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 80px; }
 
-  .add-wrap{text-align:center;margin-bottom:12px;}
-  .add-btn{background:var(--roxo);color:var(--amarelo);padding:10px 18px;border-radius:12px;border:none;font-weight:800;cursor:pointer;}
+        /* HEADER & ALERT */
+        header { background: #fff; padding: 15px; text-align: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        header h1 { font-size: 18px; margin: 0; color: var(--roxo); font-weight: 900; letter-spacing: 1px; }
+        .alerta-adm { background: #fff9db; color: #856404; padding: 10px; margin: 10px 15px; border-radius: 10px; font-size: 12px; text-align: center; font-weight: 600; border: 1px solid #ffeeba; }
 
-  .table-wrap{margin-top:6px;border-radius:12px;overflow:hidden;border:2px solid var(--linha);}  
-  table{width:100%;border-collapse:collapse;font-size:14px;}
-  thead th{background:var(--roxo);color:var(--amarelo);text-transform:uppercase;padding:10px;font-weight:800;text-align:left;font-size:13px;}
-  tbody td{padding:10px;border-bottom:1px solid var(--linha);background:#fbf9ff;vertical-align:middle;font-size:13px;}
+        .container { max-width: 600px; margin: 0 auto; padding: 0 15px; }
 
-  .col-right{text-align:right;}
-  .col-center{text-align:center;}
+        /* ABA LANÇAR (NOVO) */
+        .form-card { background: var(--card); padding: 20px; border-radius: 18px; border: 1px solid var(--border); margin-top: 10px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 800; color: #a0a0a0; margin-bottom: 6px; text-transform: uppercase; }
+        input { width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid var(--border); background: #fbfbfb; font-size: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--roxo); background: #fff; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn-principal { width: 100%; background: var(--roxo); color: #fff; border: none; padding: 16px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 15px rgba(123,44,255,0.2); }
 
-  .btn-mini{border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;margin-left:6px;}
-  .btn-edit{background:#6aa8ff;color:#fff;}
-  .btn-delete{background:#ff6b6b;color:#fff;}
+        /* RESUMO CARD (ESTILO ORIGINAL) */
+        .resumo-card {
+            background: linear-gradient(135deg, var(--roxo), var(--roxo-escuro));
+            color: #fff; padding: 25px; border-radius: 22px; margin: 15px 0;
+            text-align: center; box-shadow: 0 10px 25px rgba(123,44,255,0.2);
+        }
+        .resumo-card span { font-size: 12px; text-transform: uppercase; opacity: 0.9; font-weight: 600; }
+        .resumo-card h2 { font-size: 32px; margin: 5px 0 0; font-weight: 800; }
 
-  .btn-pago{padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:700;border:none;min-width:80px;}
-  .nao-pago{background:#ff6b6b;color:white;}
-  .pago{background:#28a745;color:white;}
+        /* FILTROS (ESTILO ORIGINAL) */
+        .filtros-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 5px; scrollbar-width: none; }
+        .filtros-scroll::-webkit-scrollbar { display: none; }
+        .btn-filtro { padding: 10px 22px; border-radius: 25px; border: 1px solid var(--border); background: #fff; font-size: 13px; font-weight: 700; white-space: nowrap; color: #777; cursor: pointer; }
+        .btn-filtro.active { background: var(--roxo); color: #fff; border-color: var(--roxo); }
 
-  .filtro-area{margin-top:12px;padding:12px;background:white;border:2px solid var(--linha);border-radius:12px;}
-  .linha-filtros{display:flex;gap:10px;margin-bottom:12px;align-items:end;flex-wrap:wrap;}
-  .linha-filtros .field{min-width:150px;flex:1}
+        /* CARDS DE REGISTRO */
+        .card-item { background: #fff; border-radius: 18px; padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .card-title b { display: block; font-size: 15px; color: #1e272e; }
+        .card-title span { font-size: 12px; color: #95a5a6; }
+        .status-tag { padding: 5px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .pago { background: #e8f5e9; color: #2e7d32; }
+        .pendente { background: #fff3e0; color: #ef6c00; }
 
-  .small-btn{padding:6px 8px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;margin-left:6px}
+        .card-body { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; border-top: 1px solid #f8f9fa; padding-top: 12px; }
+        .info-label { font-size: 10px; color: #b2bec3; text-transform: uppercase; font-weight: 700; }
+        .info-value { display: block; font-size: 13px; color: #2d3436; font-weight: 700; margin-top: 2px; }
 
-  /* POPUP CALENDARIO CUSTOM */
-  .popup-bg{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.28);display:none;justify-content:center;align-items:center;z-index:9999;padding:12px;}
-  .popup-cal{background:white;padding:12px;border-radius:12px;border:2px solid var(--linha);box-shadow:0 20px 40px rgba(0,0,0,0.12);width:100%;max-width:420px;max-height:90vh;overflow:auto;}
-  .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:700;color:var(--roxo-escuro);}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
-  .cal-day, .cal-label{text-align:center;padding:10px;border-radius:8px;user-select:none;font-size:14px;}
-  .cal-label{font-weight:800;color:var(--roxo-escuro);font-size:12px}
-  .cal-day{cursor:pointer;background:#fff;border:1px solid var(--linha);min-height:40px;display:flex;align-items:center;justify-content:center}
-  .cal-day:hover{background:#f3f0ff}
-  .sel{background:var(--roxo);color:white;font-weight:700;border-color:var(--roxo-escuro)!important}
+        /* BOTÕES DE ADM NO CARD */
+        .card-actions { display: flex; gap: 8px; margin-top: 15px; border-top: 1px solid #f8f9fa; padding-top: 12px; }
+        .btn-action { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: #fbfbfb; font-size: 11px; font-weight: 700; cursor: pointer; color: #636e72; }
+        .btn-edit { color: var(--roxo); }
+        .btn-del { color: #d63031; }
 
-  .popup-actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
-  .btn-clear{background:#f3f3f3;border:1px solid #ddd;padding:8px 10px;border-radius:8px;cursor:pointer}
+        /* NAV BOTTOM */
+        .nav-bottom { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #b2bec3; text-decoration: none; font-size: 10px; font-weight: 800; flex: 1; }
+        .nav-item.active { color: var(--roxo); }
+        .nav-icon { font-size: 20px; display: block; margin-bottom: 4px; }
 
-  #totalMargem{font-size:16px;font-weight:800;color:var(--roxo-escuro);text-align:right;margin-top:8px;}
+        /* CALENDARIO POPUP */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: #fff; border-radius: 20px; width: 100%; max-width: 350px; padding: 20px; }
 
-  @media (max-width:980px){
-    .form-grid{grid-template-columns:repeat(2,1fr);}
-    .linha-filtros{flex-direction:column;align-items:stretch}
-    .cal-day{min-height:44px}
-  }
-</style>
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
-<div class="page"><div class="container">
-  <h2>Movimentação de capital de investidores</h2>
 
-  <div class="form-grid">
-    <div class="field"><label>DATA ENTRADA</label><input id="dataEntrada" type="text" readonly placeholder="dd/mm/aaaa"></div>
-    <div class="field"><label>DATA SAÍDA</label><input id="dataSaida" type="text" readonly placeholder="dd/mm/aaaa"></div>
-    <div class="field"><label>CARRO</label><input id="carro" type="text"></div>
-    <div class="field"><label>CLIENTE</label><input id="cliente" type="text"></div>
-    <div class="field"><label>PLACA</label><input id="placa" type="text"></div>
-    <div class="field"><label>FORNECEDOR</label><input id="fornecedor" type="text"></div>
-    <div class="field"><label>VALOR COMPRA</label><input id="valorCompra" type="number" step="0.01"></div>
-    <div class="field"><label>VALOR VENDA</label><input id="valorVenda" type="number" step="0.01"></div>
-  </div>
+<header><h1>HM DESK BUSINESS</h1></header>
+<div class="alerta-adm">🛡️ MODO ADMINISTRADOR ATIVO</div>
 
-  <div class="add-wrap"><button id="btnAdd" class="add-btn">Adicionar Registro</button></div>
-
-  <div class="table-wrap"><table><thead><tr>
-    <th>Entrada</th><th>Carro</th><th>Placa</th><th>Fornecedor</th><th class="col-right">Compra</th>
-    <th>Saída</th><th>Cliente</th><th class="col-right">Venda</th><th class="col-right">Margem</th><th>Status</th><th>Ações</th>
-  </tr></thead><tbody id="tbody"></tbody></table></div>
-
-  <div class="filtro-area">
-    <div class="linha-filtros">
-      <div class="field"><label>Mês</label><input id="filtroMes" type="text" readonly placeholder="MM / AAAA"></div>
-      <div class="field"><label>Dia</label><input id="filtroDia" type="text" readonly placeholder="dd/mm/aaaa"></div>
-      <div class="field"><label>Período</label><input id="weekInput" readonly placeholder="Selecionar período"></div>
-      <div class="field"><label>Status</label>
-        <select id="filtroStatus">
-          <option value="">Todos</option>
-          <option value="pago">Pago</option>
-          <option value="nao">Não pago</option>
-        </select>
-      </div>
+<div class="container">
+    <div id="abaLancar">
+        <div class="form-card">
+            <div class="form-group">
+                <label>Veículo / Descrição</label>
+                <input type="text" id="in-carro" placeholder="Ex: Corolla XEI">
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Placa</label>
+                    <input type="text" id="in-placa" placeholder="ABC-1234">
+                </div>
+                <div class="form-group">
+                    <label>Fornecedor</label>
+                    <input type="text" id="in-fornecedor" placeholder="Nome">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Data Entrada</label>
+                    <input type="date" id="in-entrada">
+                </div>
+                <div class="form-group">
+                    <label>Data Saída</label>
+                    <input type="date" id="in-saida">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Valor Compra (R$)</label>
+                    <input type="number" id="in-compra" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Valor Venda (R$)</label>
+                    <input type="number" id="in-venda" placeholder="0.00">
+                </div>
+            </div>
+            <input type="hidden" id="edit-index" value="-1">
+            <button class="btn-principal" onclick="salvarRegistro()" id="btn-main">Salvar Registro</button>
+            <button class="btn-principal hidden" id="btn-cancel" style="background:#636e72; margin-top:5px;" onclick="cancelarEdicao()">Cancelar Edição</button>
+        </div>
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
-      <div>
-        <button id="clearAllFilters" class="small-btn">Limpar filtros</button>
-      </div>
-      <div id="totalMargem">Total da Margem: R$ 0,00</div>
+    <div id="abaRegistros" class="hidden">
+        <div class="resumo-card">
+            <span>Margem Total Acumulada</span>
+            <h2 id="resumo-margem">R$ 0,00</h2>
+        </div>
+
+        <div class="filtros-scroll">
+            <button class="btn-filtro active" onclick="setFiltro('todos', this)">Todos</button>
+            <button class="btn-filtro" onclick="setFiltro('hoje', this)">Hoje</button>
+            <button class="btn-filtro" onclick="setFiltro('mes', this)">Este Mês</button>
+            <button class="btn-filtro" onclick="abrirCalendario()">📅 Período</button>
+        </div>
+
+        <div id="lista-registros"></div>
     </div>
-  </div>
-
-  <div style="margin-top:10px;">
-    <button id="backupBtn" class="add-btn" style="margin-right:8px">Backup JSON</button>
-    <button id="importBtn" class="add-btn">Importar JSON</button>
-  </div>
-
-</div></div>
-
-<div id="popupBg" class="popup-bg" aria-hidden="true">
-  <div class="popup-cal" role="dialog" aria-modal="true">
-    <div class="cal-head">
-      <button id="prevMes">◀</button>
-      <div style="font-weight:800" id="calTitulo"></div>
-      <button id="nextMes">▶</button>
-    </div>
-
-    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
-      <button id="modeDay" class="small-btn">Dia</button>
-      <button id="modeMonth" class="small-btn">Mês</button>
-      <button id="modeRange" class="small-btn">Período</button>
-      <div style="flex:1"></div>
-      <button id="popupClear" class="btn-clear">Limpar</button>
-      <button id="popupClose" class="btn-clear">Fechar</button>
-    </div>
-
-    <div id="calGrid" class="cal-grid" role="grid" aria-label="Calendário"></div>
-
-    <div class="popup-actions" style="margin-top:10px;">
-      <button id="popupApply" class="add-btn">Aplicar</button>
-    </div>
-  </div>
 </div>
 
+<nav class="nav-bottom">
+    <a href="javascript:void(0)" class="nav-item active" onclick="mudarAba('lancar', this)">
+        <span class="nav-icon">➕</span>LANÇAR
+    </a>
+    <a href="javascript:void(0)" class="nav-item" onclick="mudarAba('registros', this)">
+        <span class="nav-icon">📋</span>REGISTROS
+    </a>
+</nav>
+
 <script>
-/* ================= STATE & STORAGE ================= */
-const STORAGE_KEY = "registrosVeiculos_v2";
-let registros = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-let diasSelecionados = []; 
-let filtroMesVal = ""; 
-let filtroDiaVal = ""; 
-let filtroStatusVal = ""; 
-let editIndex = null;
+    const DB_KEY = "hm_pro_db";
+    let dados = JSON.parse(localStorage.getItem(DB_KEY) || "[]");
+    let filtroAtual = "todos";
 
-let calMode = "day"; 
-let calView = new Date(); 
-let firstClick = null; 
-
-/* elements */
-const tbody = document.getElementById("tbody");
-const btnAdd = document.getElementById("btnAdd");
-const dataEntradaInput = document.getElementById("dataEntrada");
-const dataSaidaInput = document.getElementById("dataSaida");
-const carroInput = document.getElementById("carro");
-const clienteInput = document.getElementById("cliente");
-const placaInput = document.getElementById("placa");
-const fornecedorInput = document.getElementById("fornecedor");
-const valorCompraInput = document.getElementById("valorCompra");
-const valorVendaInput = document.getElementById("valorVenda");
-
-const filtroMesInput = document.getElementById("filtroMes");
-const filtroDiaInput = document.getElementById("filtroDia");
-const weekInput = document.getElementById("weekInput");
-const filtroStatus = document.getElementById("filtroStatus");
-const clearAllFilters = document.getElementById("clearAllFilters");
-const totalMargemEl = document.getElementById("totalMargem");
-
-const popupBg = document.getElementById("popupBg");
-const calGrid = document.getElementById("calGrid");
-const calTitulo = document.getElementById("calTitulo");
-const prevMesBtn = document.getElementById("prevMes");
-const nextMesBtn = document.getElementById("nextMes");
-const modeDayBtn = document.getElementById("modeDay");
-const modeMonthBtn = document.getElementById("modeMonth");
-const modeRangeBtn = document.getElementById("modeRange");
-const popupClose = document.getElementById("popupClose");
-const popupClear = document.getElementById("popupClear");
-const popupApply = document.getElementById("popupApply");
-
-const backupBtn = document.getElementById("backupBtn");
-const importBtn = document.getElementById("importBtn");
-
-/* ================ UTILITIES ================ */
-function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(registros)); }
-function formatDisplayDateIso(iso){ if(!iso) return ""; const [y,m,d] = iso.split("-"); return `${d}/${m}/${y}`; }
-function toIsoYMD(d){ 
-  const y = d.getFullYear(); const m = String(d.getMonth()+1).padStart(2,'0'); const day = String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${day}`;
-}
-function formatNumber(val){ const num = Number(val||0); return num.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function escapeHtml(s){ if(!s) return ""; return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"); }
-
-function parseIsoToDate(iso){
-  if(!iso) return null;
-  const parts = iso.split("-");
-  if(parts.length !== 3) return null;
-  const y = Number(parts[0]), m = Number(parts[1]) - 1, d = Number(parts[2]);
-  return new Date(y, m, d);
-}
-
-/* ================ RENDER TABLE ================ */
-function render(showAll=false){
-  tbody.innerHTML = "";
-  const idxs = showAll ? registros.map((_,i)=>i) : getFilteredIndexes();
-  for(const i of idxs){
-    const r = registros[i];
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${r.dataEntrada? formatDisplayDateIso(r.dataEntrada) : ""}</td>
-      <td>${escapeHtml(r.carro)}</td>
-      <td>${escapeHtml(r.placa)}</td>
-      <td>${escapeHtml(r.fornecedor)}</td>
-      <td class="col-right">R$ ${formatNumber(r.valorCompra)}</td>
-      <td>${r.dataSaida? formatDisplayDateIso(r.dataSaida) : ""}</td>
-      <td>${escapeHtml(r.cliente)}</td>
-      <td class="col-right">R$ ${formatNumber(r.valorVenda)}</td>
-      <td class="col-right">R$ ${formatNumber(r.margem)}</td>
-      <td class="col-center">
-        <button class="btn-pago ${r.pago ? 'pago' : 'nao-pago'}" onclick="togglePago(${i})">
-          ${r.pago ? 'Pago' : 'Não pago'}
-        </button>
-      </td>
-      <td class="col-center">
-        <button class="btn-mini btn-edit" onclick="editReg(${i})">Editar</button>
-        <button class="btn-mini btn-delete" onclick="delReg(${i})">Excluir</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  }
-}
-
-/* ================ FILTERS ================ */
-function getFilteredIndexes(){
-  const mes = filtroMesVal; 
-  const dia = filtroDiaVal; 
-  const ds = diasSelecionados.slice();
-  const st = filtroStatusVal;
-
-  const results = [];
-  for(let i=0;i<registros.length;i++){
-    const r = registros[i];
-    if(!r.dataEntrada){ continue; }
-    if(dia){
-      if(r.dataEntrada === dia){
-        if(st && st==="pago" && !r.pago) continue;
-        if(st && st==="nao" && r.pago) continue;
-        results.push(i);
-      }
-      continue;
+    // NAVEGAÇÃO
+    function mudarAba(aba, el) {
+        document.getElementById('abaLancar').classList.toggle('hidden', aba !== 'lancar');
+        document.getElementById('abaRegistros').classList.toggle('hidden', aba !== 'registros');
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        if(aba === 'registros') renderizar();
     }
-    if(ds.length>0){
-      if(ds.includes(r.dataEntrada)){
-        if(st && st==="pago" && !r.pago) continue;
-        if(st && st==="nao" && r.pago) continue;
-        results.push(i);
-      }
-      continue;
-    }
-    if(mes){
-      if(r.dataEntrada.startsWith(mes)){
-        if(st && st==="pago" && !r.pago) continue;
-        if(st && st==="nao" && r.pago) continue;
-        results.push(i);
-      }
-      continue;
-    }
-    if(st){
-      if(st==="pago" && !r.pago) continue;
-      if(st==="nao" && r.pago) continue;
-    }
-    results.push(i);
-  }
-  return results;
-}
 
-function aplicarFiltros(){
-  const idxs = getFilteredIndexes();
-  let total = 0;
-  for(const idx of idxs) total += Number(registros[idx].margem || 0);
-  totalMargemEl.innerText = "Total da Margem: R$ " + formatNumber(total);
-  render();
-}
+    // SALVAR / EDITAR
+    function salvarRegistro() {
+        const index = parseInt(document.getElementById('edit-index').value);
+        const compra = parseFloat(document.getElementById('in-compra').value) || 0;
+        const venda = parseFloat(document.getElementById('in-venda').value) || 0;
+        
+        // Mantendo a lógica de margem de 40% sobre o lucro bruto
+        const lucroBruto = venda - compra;
+        const margemCalculada = lucroBruto * 0.4;
 
-/* ================ ADD / EDIT / DELETE / TOGGLE ================ */
-function clearForm(){
-  dataEntradaInput.value = "";
-  dataSaidaInput.value = "";
-  carroInput.value = "";
-  clienteInput.value = "";
-  placaInput.value = "";
-  fornecedorInput.value = "";
-  valorCompraInput.value = "";
-  valorVendaInput.value = "";
-  editIndex = null;
-  btnAdd.textContent = "Adicionar Registro";
-}
+        const registro = {
+            carro: document.getElementById('in-carro').value,
+            placa: document.getElementById('in-placa').value,
+            fornecedor: document.getElementById('in-fornecedor').value,
+            dataEntrada: document.getElementById('in-entrada').value,
+            dataSaida: document.getElementById('in-saida').value,
+            valorCompra: compra,
+            valorVenda: venda,
+            margem: margemCalculada,
+            pago: index >= 0 ? dados[index].pago : false
+        };
 
-btnAdd.addEventListener('click', ()=> {
-  const entradaIso = parseDateFromDisplay(dataEntradaInput.value);
-  const saidaIso = parseDateFromDisplay(dataSaidaInput.value);
-  const compra = Number(valorCompraInput.value);
-  const venda = Number(valorVendaInput.value);
-  if(isNaN(compra) || isNaN(venda)){ alert("Preencha valores de compra e venda corretamente."); return; }
+        if(!registro.carro) return alert("Preencha ao menos o veículo");
 
-  const margemCalc = Number(((venda - compra) * 0.40).toFixed(2));
-
-  if(editIndex !== null){
-    registros[editIndex] = {
-      ...registros[editIndex],
-      dataEntrada: entradaIso || "",
-      dataSaida: saidaIso || "",
-      carro: carroInput.value || "",
-      cliente: clienteInput.value || "",
-      placa: placaInput.value || "",
-      fornecedor: fornecedorInput.value || "",
-      valorCompra: Number(compra),
-      valorVenda: Number(venda),
-      margem: margemCalc
-    };
-    editIndex = null;
-    btnAdd.textContent = "Adicionar Registro";
-    save(); aplicarFiltros(); render();
-    clearForm();
-    return;
-  }
-
-  const novo = {
-    dataEntrada: entradaIso || "",
-    dataSaida: saidaIso || "",
-    carro: carroInput.value || "",
-    cliente: clienteInput.value || "",
-    placa: placaInput.value || "",
-    fornecedor: fornecedorInput.value || "",
-    valorCompra: Number(compra),
-    valorVenda: Number(venda),
-    margem: margemCalc,
-    pago: false
-  };
-
-  registros.push(novo);
-  save();
-  render(true);
-  setTimeout(()=> aplicarFiltros(), 40);
-  clearForm();
-});
-
-function editReg(i){
-  const r = registros[i];
-  if(!r) return;
-  dataEntradaInput.value = r.dataEntrada ? formatDisplayDateIso(r.dataEntrada) : "";
-  dataSaidaInput.value = r.dataSaida ? formatDisplayDateIso(r.dataSaida) : "";
-  carroInput.value = r.carro || "";
-  clienteInput.value = r.cliente || "";
-  placaInput.value = r.placa || "";
-  fornecedorInput.value = r.fornecedor || "";
-  valorCompraInput.value = r.valorCompra ?? "";
-  valorVendaInput.value = r.valorVenda ?? "";
-  editIndex = i;
-  btnAdd.textContent = "Salvar Alterações";
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function delReg(i){
-  if(!confirm("Deseja realmente excluir este registro?")) return;
-  registros.splice(i,1);
-  save();
-  aplicarFiltros();
-}
-
-function togglePago(i){
-  registros[i].pago = !registros[i].pago;
-  save();
-  aplicarFiltros();
-}
-
-function parseDateFromDisplay(display){ 
-  if(!display) return "";
-  const parts = display.split("/");
-  if(parts.length !== 3) return "";
-  const dd = parts[0].padStart(2,'0'), mm = parts[1].padStart(2,'0'), yyyy = parts[2];
-  return `${yyyy}-${mm}-${dd}`;
-}
-
-/* ================ POPUP (calendar) ================ */
-function openPopup(mode, anchorField){
-  calMode = mode; 
-  if(mode === "month"){
-    if(filtroMesVal){
-      const [y,m] = filtroMesVal.split("-");
-      calView = new Date(Number(y), Number(m)-1, 1);
-    } else {
-      calView = new Date();
-    }
-  } else {
-    const currentText = anchorField && anchorField.value ? anchorField.value : "";
-    const iso = parseDateFromDisplay(currentText);
-    if(iso){
-      const [yy,mm] = iso.split("-");
-      calView = new Date(Number(yy), Number(mm)-1, 1);
-    } else {
-      calView = new Date();
-    }
-  }
-  firstClick = null;
-  showPopup();
-  gerarCalendario();
-}
-function showPopup(){ popupBg.style.display = "flex"; popupBg.setAttribute('aria-hidden','false'); }
-function closePopup(){ popupBg.style.display = "none"; popupBg.setAttribute('aria-hidden','true'); }
-
-function gerarCalendario(){
-  calGrid.innerHTML = "";
-  const ano = calView.getFullYear();
-  const mes = calView.getMonth();
-
-  if(calMode === "month"){
-    calTitulo.innerText = (ano);
-    const months = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
-    const grid = document.createElement("div");
-    grid.style.display = "grid";
-    grid.style.gridTemplateColumns = "repeat(3,1fr)";
-    grid.style.gap = "8px";
-    months.forEach((mName, idx)=>{
-      const btn = document.createElement("div");
-      btn.className = "cal-day";
-      btn.style.minHeight = "56px";
-      btn.textContent = `${String(idx+1).padStart(2,'0')} — ${mName}`;
-      btn.dataset.month = String(idx+1).padStart(2,'0');
-      btn.addEventListener('click', ()=>{
-        filtroMesVal = `${ano}-${String(idx+1).padStart(2,'0')}`;
-        filtroMesInput.value = `${String(idx+1).padStart(2,'0')}/${ano}`;
-        closePopup();
-        aplicarFiltros();
-      });
-      grid.appendChild(btn);
-    });
-    calGrid.appendChild(grid);
-    return;
-  }
-
-  calTitulo.innerText = `${String(mes+1).padStart(2,'0')} / ${ano}`;
-  const cab = ["D","S","T","Q","Q","S","S"];
-  cab.forEach(l=>{
-    const el = document.createElement("div"); el.className = "cal-label"; el.innerText = l; calGrid.appendChild(el);
-  });
-
-  const primeiro = new Date(ano,mes,1).getDay(); 
-  for(let i=0;i<primeiro;i++){
-    const v = document.createElement("div"); calGrid.appendChild(v);
-  }
-
-  const ultimo = new Date(ano, mes+1, 0).getDate();
-  for(let d=1; d<=ultimo; d++){
-    const cell = document.createElement("div");
-    cell.className = "cal-day";
-    cell.innerText = d;
-    const iso = `${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    cell.dataset.date = iso;
-    if(diasSelecionados.includes(iso)) cell.classList.add("sel");
-    cell.addEventListener('click', (ev)=>{
-      ev.stopPropagation();
-      if(calMode === "day"){
-        diasSelecionados = [iso];
-        firstClick = null;
-        gerarCalendario();
-      } else {
-        if(!firstClick){
-          firstClick = iso;
-          diasSelecionados = [iso];
-          gerarCalendario();
-          return;
+        if(index >= 0) {
+            dados[index] = registro;
+        } else {
+            dados.push(registro);
         }
-        const d1 = parseIsoToDate(firstClick);
-        const d2 = parseIsoToDate(iso);
-        if(!d1 || !d2) return;
-        let start = d1, end = d2;
-        if(end < start){ const tmp = start; start = end; end = tmp; }
-        const sel = [];
-        const cur = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-        while(cur <= end){
-          sel.push(toIsoYMD(cur));
-          cur.setDate(cur.getDate() + 1);
+
+        localStorage.setItem(DB_KEY, JSON.stringify(dados));
+        alert("Salvo com sucesso!");
+        limparCampos();
+        mudarAba('registros', document.querySelectorAll('.nav-item')[1]);
+    }
+
+    // RENDERIZAR LISTA
+    function renderizar() {
+        const lista = document.getElementById('lista-registros');
+        lista.innerHTML = "";
+        let totalMargem = 0;
+
+        const hoje = new Date().toISOString().split('T')[0];
+
+        const filtrados = dados.filter(r => {
+            if(filtroAtual === 'hoje') return r.dataEntrada === hoje;
+            if(filtroAtual === 'mes') return r.dataEntrada.substring(0,7) === hoje.substring(0,7);
+            return true;
+        }).reverse();
+
+        filtrados.forEach((r) => {
+            totalMargem += r.margem;
+            const originalIndex = dados.indexOf(r);
+            const card = document.createElement('div');
+            card.className = 'card-item';
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">
+                        <b>${r.carro}</b>
+                        <span>${r.placa || 'Sem Placa'} • ${fmtData(r.dataEntrada)}</span>
+                    </div>
+                    <span class="status-tag ${r.pago ? 'pago' : 'pendente'}" onclick="toggleStatus(${originalIndex})">
+                        ${r.pago ? 'Pago' : 'Pendente'}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div><span class="info-label">Fornecedor</span><b class="info-value">${r.fornecedor || '-'}</b></div>
+                    <div><span class="info-label">Venda</span><b class="info-value">R$ ${r.valorVenda.toLocaleString()}</b></div>
+                    <div style="color:var(--success)"><span class="info-label">Margem</span><b class="info-value">R$ ${r.margem.toLocaleString()}</b></div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-action btn-edit" onclick="iniciarEdicao(${originalIndex})">EDITAR</button>
+                    <button class="btn-action btn-del" onclick="excluirRegistro(${originalIndex})">EXCLUIR</button>
+                </div>
+            `;
+            lista.appendChild(card);
+        });
+
+        document.getElementById('resumo-margem').innerText = "R$ " + totalMargem.toLocaleString('pt-BR', {minimumFractionDigits:2});
+    }
+
+    // FUNÇÕES DE ADM
+    function toggleStatus(i) {
+        dados[i].pago = !dados[i].pago;
+        localStorage.setItem(DB_KEY, JSON.stringify(dados));
+        renderizar();
+    }
+
+    function excluirRegistro(i) {
+        if(confirm("Deseja realmente excluir este registro?")) {
+            dados.splice(i, 1);
+            localStorage.setItem(DB_KEY, JSON.stringify(dados));
+            renderizar();
         }
-        diasSelecionados = sel;
-        firstClick = null;
-        gerarCalendario();
-      }
-    });
-    calGrid.appendChild(cell);
-  }
-}
-
-prevMesBtn.addEventListener('click', ()=>{
-  calView.setMonth(calView.getMonth()-1); gerarCalendario();
-});
-nextMesBtn.addEventListener('click', ()=>{
-  calView.setMonth(calView.getMonth()+1); gerarCalendario();
-});
-modeDayBtn.addEventListener('click', ()=>{ calMode="day"; gerarCalendario(); });
-modeMonthBtn.addEventListener('click', ()=>{ calMode="month"; gerarCalendario(); });
-modeRangeBtn.addEventListener('click', ()=>{ calMode="range"; gerarCalendario(); });
-
-popupClose.addEventListener('click', ()=> closePopup());
-popupClear.addEventListener('click', ()=>{
-  diasSelecionados = []; firstClick = null;
-  if(calMode === "month"){
-    filtroMesVal = ""; filtroMesInput.value = "";
-  }
-  gerarCalendario(); aplicarFiltros();
-});
-
-popupApply.addEventListener('click', ()=>{
-  if(calMode === "month"){
-    closePopup();
-    return;
-  }
-  if(calMode === "day"){
-    const iso = diasSelecionados[0] || "";
-    if(currentAnchorField){
-      currentAnchorField.value = iso ? formatDisplayDateIso(iso) : "";
-      if(currentAnchorField === filtroDiaInput) filtroDiaVal = iso || "";
     }
-    closePopup();
-    aplicarFiltros();
-    return;
-  }
-  if(calMode === "range"){
-    if(diasSelecionados.length === 0){
-      weekInput.value = "";
-    } else {
-      const first = diasSelecionados[0], last = diasSelecionados[diasSelecionados.length-1];
-      weekInput.value = `${formatDisplayDateIso(first)} → ${formatDisplayDateIso(last)}`;
+
+    function iniciarEdicao(i) {
+        const r = dados[i];
+        document.getElementById('in-carro').value = r.carro;
+        document.getElementById('in-placa').value = r.placa;
+        document.getElementById('in-fornecedor').value = r.fornecedor;
+        document.getElementById('in-entrada').value = r.dataEntrada;
+        document.getElementById('in-saida').value = r.dataSaida;
+        document.getElementById('in-compra').value = r.valorCompra;
+        document.getElementById('in-venda').value = r.valorVenda;
+        document.getElementById('edit-index').value = i;
+        
+        document.getElementById('btn-main').innerText = "Atualizar Registro";
+        document.getElementById('btn-cancel').classList.remove('hidden');
+        mudarAba('lancar', document.querySelectorAll('.nav-item')[0]);
     }
-    filtroDiaVal = "";
-    closePopup();
-    aplicarFiltros();
-    return;
-  }
-});
 
-let currentAnchorField = null;
-function openCalendarFor(field, mode){
-  currentAnchorField = field || null;
-  openPopup(mode, field);
-}
+    function cancelarEdicao() {
+        limparCampos();
+        mudarAba('registros', document.querySelectorAll('.nav-item')[1]);
+    }
 
-popupBg.addEventListener('click', (ev)=>{ if(ev.target === popupBg) closePopup(); });
+    function limparCampos() {
+        document.querySelectorAll('input').forEach(i => i.value = "");
+        document.getElementById('edit-index').value = "-1";
+        document.getElementById('btn-main').innerText = "Salvar Registro";
+        document.getElementById('btn-cancel').classList.add('hidden');
+    }
 
-dataEntradaInput.addEventListener('click', ()=> openCalendarFor(dataEntradaInput, "day"));
-dataSaidaInput.addEventListener('click', ()=> openCalendarFor(dataSaidaInput, "day"));
-filtroDiaInput.addEventListener('click', ()=> openCalendarFor(filtroDiaInput, "day"));
-filtroMesInput.addEventListener('click', ()=> openCalendarFor(null, "month"));
-weekInput.addEventListener('click', ()=> openCalendarFor(null, "range"));
+    function setFiltro(f, btn) {
+        filtroAtual = f;
+        document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderizar();
+    }
 
-filtroStatus.addEventListener('change', ()=>{
-  filtroStatusVal = filtroStatus.value;
-  aplicarFiltros();
-});
+    function fmtData(d) { return d ? d.split('-').reverse().join('/') : '-'; }
 
-clearAllFilters.addEventListener('click', ()=>{
-  filtroMesVal = "";
-  filtroMesInput.value = "";
-  filtroDiaVal = "";
-  filtroDiaInput.value = "";
-  diasSelecionados = [];
-  weekInput.value = "";
-  filtroStatusVal = "";
-  filtroStatus.value = "";
-  aplicarFiltros();
-});
-
-backupBtn.addEventListener('click', ()=>{
-  const data = JSON.stringify(registros, null, 2);
-  const blob = new Blob([data], { type: "application/json" });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = "backup_registros.json";
-  a.click();
-});
-
-importBtn.addEventListener('click', ()=>{
-  const inp = document.createElement('input'); inp.type = "file"; inp.accept = "application/json";
-  inp.onchange = ()=> {
-    const file = inp.files[0];
-    const fr = new FileReader();
-    fr.onload = ()=> {
-      try {
-        const parsed = JSON.parse(fr.result);
-        if(!Array.isArray(parsed)) throw new Error("Formato inválido");
-        registros = parsed;
-        save();
-        aplicarFiltros();
-      } catch(e){ alert("Arquivo inválido"); }
+    // PWA SETUP (MANIFESTO DINAMICO)
+    const manifest = {
+        "name": "HM DESK BUSINESS ADM",
+        "short_name": "HM ADM",
+        "display": "standalone",
+        "start_url": ".",
+        "theme_color": "#7b2cff",
+        "background_color": "#ffffff",
+        "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/3001/3001764.png", "sizes": "512x512", "type": "image/png"}]
     };
-    fr.readAsText(file);
-  };
-  inp.click();
-});
+    const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    document.querySelector('#pwa-manifest').setAttribute('href', URL.createObjectURL(blob));
 
-function initialize(){
-  filtroMesVal = "";
-  filtroDiaVal = "";
-  diasSelecionados = [];
-  filtroStatusVal = "";
-  filtroMesInput.value = "";
-  filtroDiaInput.value = "";
-  weekInput.value = "";
-  filtroStatus.value = "";
-  render();
-  aplicarFiltros();
-}
-initialize();
-
-window.editReg = editReg;
-window.delReg = delReg;
-window.togglePago = togglePago;
-
-/* ================ PWA SETUP (NOVAS FUNÇÕES) ================ */
-// 1. Criar Manifesto Dinamicamente para possibilitar instalação
-const manifest = {
-  "name": "Movimentação de Investidores",
-  "short_name": "Investidores",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#f3edff",
-  "theme_color": "#7b2cff",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/263/263154.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(URL.createObjectURL(new Blob(["self.addEventListener('fetch', function(event) { event.respondWith(fetch(event.request)); });"], {type: 'text/javascript'})));
     }
-  ]
-};
-const stringManifest = JSON.stringify(manifest);
-const manifestBlob = new Blob([stringManifest], {type: 'application/json'});
-document.querySelector('#pwa-manifest').setAttribute('href', URL.createObjectURL(manifestBlob));
-
-// 2. Registrar Service Worker minimalista para cumprir requisitos de instalação
-if ('serviceWorker' in navigator) {
-  const swCode = `
-    self.addEventListener('fetch', (event) => {
-      // Estratégia simples de rede para funcionamento básico
-      event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
-    });
-  `;
-  const swBlob = new Blob([swCode], {type: 'text/javascript'});
-  const swUrl = URL.createObjectURL(swBlob);
-  navigator.serviceWorker.register(swUrl);
-}
-
-// 3. Log de suporte à instalação
-window.addEventListener('beforeinstallprompt', (e) => {
-  // O navegador dispara isso quando o app é instalável
-  console.log('App pronto para instalação no Desktop/Android');
-});
 </script>
+
 </body>
 </html>
