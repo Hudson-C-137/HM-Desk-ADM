@@ -10,14 +10,14 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="theme-color" content="#7b2cff" />
 
-<link rel="manifest" href="data:application/json;base64,ewogICJkZWZhdWx0X2xvY2FsZSI6ICJwdCIsCiAgIm5hbWUiOiAiQ2FwaXRhbEFwcCIsCiAgInNob3J0X25hbWUiOiAiQ2FwaXRhbCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjhmOWZkIiwKICAidGhlbWVfY29sb3IiOiAiIzdiMmNmZiIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImh0dHBzOi8vY2RuLWljb25zLXBuZy5mbGF0aWNvbi5jb20vNTEyLzI0ODkvMjQ4OTcxOC5wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH1cbiAgXQp9">
+<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk1vdmltZW50YcOnw6NvIGRlIENhcGl0YWwiLAogICJzaG9ydF9uYW1lIjogIkNhcGl0YWxBcHAiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2Y4ZjlmaCIsCiAgInRoZW1lX2NvbG9yIjogIiM3YjJjZmYiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yNDg5LzI0ODk3MTgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
 
-<title>Movimentação de Capital - Web App</title>
+<title>Capital App - Web App</title>
 <style>
   :root {
     --roxo: #7b2cff; --roxo-claro: #f3edff; --roxo-escuro: #5b12cc;
-    --fundo: #f8f9fd; --card: #ffffff; --linha: #e0d4ff; --radius: 20px;
-    --shadow: 0 10px 30px rgba(123, 44, 255, 0.1);
+    --amarelo: #ffdf37; --fundo: #f8f9fd; --card: #ffffff; --linha: #e0d4ff; 
+    --radius: 20px; --shadow: 0 10px 30px rgba(123, 44, 255, 0.1);
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -27,11 +27,11 @@
     padding-top: env(safe-area-inset-top);
   }
 
-  /* BOTÃO DE INSTALAR (Só aparece se o navegador permitir) */
-  #installBtn {
-    display: none; background: var(--amarelo, #ffdf37); color: #000;
-    margin: 10px; padding: 12px; border-radius: 12px; border: none;
-    font-weight: 800; width: calc(100% - 20px); cursor: pointer;
+  /* BOTÃO DE INSTALAÇÃO DINÂMICO */
+  #bannerInstalacao {
+    display: none; background: var(--amarelo); padding: 15px;
+    text-align: center; font-weight: 800; border-bottom: 2px solid #eec900;
+    position: sticky; top: 0; z-index: 999; cursor: pointer;
   }
 
   .tabs { display: flex; background: #fff; padding: 10px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
@@ -42,7 +42,7 @@
   .view-section.active { display: block; }
 
   .container { background: var(--card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--linha); }
-  h2 { text-align: center; color: var(--roxo); margin-bottom: 20px; font-size: 20px; text-transform: uppercase; }
+  h2 { text-align: center; color: var(--roxo); margin: 0 0 20px; font-size: 20px; text-transform: uppercase; }
 
   .field { margin-bottom: 15px; }
   label { font-size: 11px; font-weight: 800; color: var(--roxo); margin-bottom: 6px; display: block; text-transform: uppercase; }
@@ -50,7 +50,7 @@
 
   .btn-main { width: 100%; background: var(--roxo); color: white; padding: 16px; border-radius: 15px; border: none; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 10px; }
 
-  /* CARROSSEL */
+  /* CARROSSEL DE CARDS */
   .slider-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 5px 25px; scrollbar-width: none; }
   .slider-container::-webkit-scrollbar { display: none; }
   .card-investidor { flex: 0 0 85%; scroll-snap-align: center; background: white; border-radius: var(--radius); border: 1.5px solid var(--linha); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; }
@@ -60,11 +60,12 @@
   .btn-pago { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; }
   .pago { background: #2ecc71; color: white; }
   .nao-pago { background: #e74c3c; color: white; }
+  
   .card-actions { display: flex; gap: 10px; }
   .btn-edit { flex: 1; background: #3498db; color: white; padding: 10px; border-radius: 8px; border: none; }
   .btn-del { flex: 1; background: #ddd; color: #555; padding: 10px; border-radius: 8px; border: none; }
 
-  /* FILTROS */
+  /* FILTROS E TOTAL */
   .filtro-card { border: 2px solid var(--roxo); padding: 15px; border-radius: var(--radius); background: #fff; margin-top: 10px; }
   .total-card { background: var(--roxo); color: white; padding: 18px; border-radius: 15px; text-align: center; margin: 15px 0; }
 
@@ -78,7 +79,9 @@
 </head>
 <body>
 
-<button id="installBtn">Instalar Aplicação</button>
+<div id="bannerInstalacao" onclick="instalarApp()">
+  ✨ CLIQUE AQUI PARA INSTALAR O APP NO SEU CELULAR ✨
+</div>
 
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('add', event)">Adicionar</button>
@@ -103,7 +106,7 @@
 <section id="tab-list" class="view-section">
   <div id="sliderMobile" class="slider-container"></div>
   <div class="filtro-card">
-    <label>Filtrar Período/Dia</label>
+    <label>Filtrar Período ou Dia</label>
     <input id="filtroData" type="text" readonly placeholder="Toque para filtrar...">
     <select id="filtroStatus" onchange="aplicarFiltros()" style="margin-top:10px">
       <option value="">Todos os Status</option>
@@ -111,7 +114,7 @@
       <option value="nao">Não Pagos</option>
     </select>
     <div class="total-card">
-      <span style="font-size:12px">LUCRO TOTAL (40%)</span>
+      <span style="font-size:12px">LUCRO ACUMULADO (40%)</span>
       <span id="totalMargem" style="display:block; font-size:22px; font-weight:900">R$ 0,00</span>
     </div>
     <button onclick="limparFiltros()" class="btn-del" style="width:100%; background:#666; color:#fff">Limpar Filtros</button>
@@ -142,28 +145,35 @@
 </div>
 
 <script>
-// LÓGICA DE INSTALAÇÃO (PWA)
-let deferredPrompt;
-const installBtn = document.getElementById('installBtn');
+/* ================= REGISTRO DE SERVICE WORKER (PARA ATIVAR PWA) ================= */
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    self.addEventListener('install', e => self.skipWaiting());
+    self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
+  `;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob));
+}
 
+let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  installBtn.style.display = 'block';
+  document.getElementById('bannerInstalacao').style.display = 'block';
 });
 
-installBtn.addEventListener('click', () => {
+function instalarApp() {
   if (deferredPrompt) {
     deferredPrompt.prompt();
     deferredPrompt.userChoice.then((choice) => {
-      if (choice.outcome === 'accepted') installBtn.style.display = 'none';
+      if (choice.outcome === 'accepted') document.getElementById('bannerInstalacao').style.display = 'none';
       deferredPrompt = null;
     });
   }
-});
+}
 
-// BACKEND ORIGINAL
-const STORAGE_KEY = "registros_cap_app_v2";
+/* ================= LÓGICA DO SISTEMA ================= */
+const STORAGE_KEY = "registros_capital_v3";
 let registros = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 let editIndex = null;
 let calViewDate = new Date();
@@ -184,6 +194,7 @@ function handleSave() {
   const c = Number(document.getElementById("valorCompra").value);
   const v = Number(document.getElementById("valorVenda").value);
   const m = Number(((v - c) * 0.40).toFixed(2));
+  
   const novo = {
     dataEntrada: parseDateToIso(document.getElementById("dataEntrada").value),
     dataSaida: parseDateToIso(document.getElementById("dataSaida").value),
@@ -194,7 +205,10 @@ function handleSave() {
     valorCompra: c, valorVenda: v, margem: m,
     pago: editIndex !== null ? registros[editIndex].pago : false
   };
-  if(editIndex !== null) registros[editIndex] = novo; else registros.push(novo);
+
+  if(editIndex !== null) registros[editIndex] = novo; 
+  else registros.push(novo);
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
   limparForm(); switchTab('list');
 }
@@ -206,15 +220,18 @@ function aplicarFiltros() {
     const mData = selectedDates.length === 0 || selectedDates.includes(r.dataEntrada);
     return mStatus && mData;
   });
+
   document.getElementById("totalMargem").innerText = "R$ " + (filtrados.reduce((a, b) => a + b.margem, 0)).toLocaleString('pt-BR', {minimumFractionDigits:2});
+  
   const slider = document.getElementById("sliderMobile");
-  slider.innerHTML = filtrados.length ? "" : "<p style='width:100%; text-align:center; color:#999'>Vazio.</p>";
+  slider.innerHTML = filtrados.length ? "" : "<p style='width:100%; text-align:center; color:#999; padding:40px 0'>Nenhum registro encontrado.</p>";
+  
   filtrados.forEach((r, i) => {
     const idx = registros.indexOf(r);
     slider.innerHTML += `<div class="card-investidor">
-      <div style="font-weight:900; color:var(--roxo)">${r.carro || '---'}</div>
-      <div class="info-row"><span>Entrada</span><b>${formatDateIso(r.dataEntrada)}</b></div>
-      <div class="margem-box"><span>LUCRO (40%)</span><b style="color:var(--roxo)">R$ ${r.margem.toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div>
+      <div style="font-weight:900; color:var(--roxo); border-bottom:1px solid #eee; padding-bottom:5px">${r.carro || 'SEM NOME'}</div>
+      <div class="info-row"><span>Entrada:</span><b>${formatDateIso(r.dataEntrada)}</b></div>
+      <div class="margem-box"><span>LUCRO (40%)</span><b style="color:var(--roxo); font-size:18px">R$ ${r.margem.toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div>
       <button class="btn-pago ${r.pago?'pago':'nao-pago'}" onclick="togglePago(${idx})">${r.pago?'PAGO':'NÃO PAGO'}</button>
       <div class="card-actions">
         <button class="btn-edit" onclick="prepararEdicao(${idx})">EDITAR</button>
@@ -233,8 +250,7 @@ function renderCalendario() {
   for(let i=0; i<prim; i++) grid.innerHTML += `<div></div>`;
   for(let d=1; d<=ult; d++) {
     const iso = `${calViewDate.getFullYear()}-${String(calViewDate.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const sel = selectedDates.includes(iso);
-    grid.innerHTML += `<div class="cal-day ${sel?'selected':''}" onclick="cliqueDia('${iso}')">${d}</div>`;
+    grid.innerHTML += `<div class="cal-day ${selectedDates.includes(iso)?'selected':''}" onclick="cliqueDia('${iso}')">${d}</div>`;
   }
 }
 
@@ -262,14 +278,14 @@ function confirmarData() {
   fecharCalendario(); if(currentTargetInput.id === "filtroData") aplicarFiltros();
 }
 
-// HELPERS
+// AUXILIARES
 const formatDateIso = (iso) => { if(!iso) return ""; const [y,m,d] = iso.split("-"); return `${d}/${m}/${y}`; };
 const parseDateToIso = (br) => { if(!br) return ""; const [d,m,y] = br.split("/"); return `${y}-${m}-${d}`; };
 const changeMonth = (v) => { calViewDate.setMonth(calViewDate.getMonth()+v); renderCalendario(); };
 const fecharCalendario = () => document.getElementById("popupBg").style.display = "none";
 const limparForm = () => { editIndex = null; document.querySelectorAll('#tab-add input').forEach(i => i.value = ""); document.getElementById("btnAdd").innerText = "Salvar no App"; };
 const togglePago = (i) => { registros[i].pago = !registros[i].pago; localStorage.setItem(STORAGE_KEY, JSON.stringify(registros)); aplicarFiltros(); };
-const excluirRegistro = (i) => { if(confirm("Excluir?")) { registros.splice(i,1); localStorage.setItem(STORAGE_KEY, JSON.stringify(registros)); aplicarFiltros(); } };
+const excluirRegistro = (i) => { if(confirm("Excluir permanentemente?")) { registros.splice(i,1); localStorage.setItem(STORAGE_KEY, JSON.stringify(registros)); aplicarFiltros(); } };
 const prepararEdicao = (idx) => { 
   editIndex = idx; const r = registros[idx];
   document.getElementById("dataEntrada").value = formatDateIso(r.dataEntrada);
@@ -280,7 +296,7 @@ const prepararEdicao = (idx) => {
   document.getElementById("btnAdd").innerText = "Atualizar Dados"; switchTab('add');
 };
 function limparFiltros() { selectedDates = []; document.getElementById("filtroData").value = ""; aplicarFiltros(); }
-function fazerBackup() { const blob = new Blob([JSON.stringify(registros)], {type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download="backup.json"; a.click(); }
+function fazerBackup() { const blob = new Blob([JSON.stringify(registros)], {type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download="backup_capital.json"; a.click(); }
 function importarDados() { const inp = document.createElement("input"); inp.type="file"; inp.onchange=(e)=>{ const fr=new FileReader(); fr.onload=(ev)=>{ registros=JSON.parse(ev.target.result); localStorage.setItem(STORAGE_KEY,JSON.stringify(registros)); aplicarFiltros(); }; fr.readAsText(e.target.files[0]); }; inp.click(); }
 
 document.getElementById("dataEntrada").onclick = (e) => { isRangeMode = false; currentTargetInput = e.target; document.getElementById("popupBg").style.display = "flex"; renderCalendario(); };
